@@ -6,6 +6,7 @@ using SixLabors.ImageSharp;
 
 namespace Archwyvern.Space2D.ImageProcessor;
 
+// For testing only
 internal class PointList : IPointIndex
 {
     private List<Point> _points = [];

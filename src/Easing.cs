@@ -2,6 +2,8 @@ using System;
 
 namespace Archwyvern.Space2D.ImageProcessor;
 
+// Copied from other project, probably dont need.
+
 public enum Easing
 {
     Linear,
