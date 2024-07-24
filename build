@@ -1,0 +1,4 @@
+#!/bin/bash
+
+GOOS=windows GOARCH=amd64 go build -o=bin/imageprocessor.exe imageprocessor.go
+GOOS=linux GOARCH=amd64 go build -o=bin/imageprocessor imageprocessor.go
