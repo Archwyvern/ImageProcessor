@@ -72,3 +72,4 @@ Input             |  Output
 Credits:
 - ImageSharp: https://sixlabors.com/products/imagesharp/
 - Example Image: https://imgbin.com/png/9zPr0DJe/galaga-spaceship-s80-spaceship-free-spacecraft-png
+- Some ChatGPT for the custom gaussian blur implementation, sorry.

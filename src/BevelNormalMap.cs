@@ -48,6 +48,7 @@ internal class BevelNormalMap
         var edges = new List<Vector2>();
         var opaque = 0;
 
+        // TODO: There is something wrong with this, without smoothing you see the streaks. I wonder if I was mean't to use polygons or something.
         for (var x = 0; x < w; x++) {
             for (var y = 0; y < h; y++) {
                 if (source[x, y].A != 0) {
@@ -77,6 +78,8 @@ internal class BevelNormalMap
 
                 if (source[x, y].A > 0 && edgeTree.FindNearestPoint(queryPoint, depth, out var edge)) {
                     var direction = edge - queryPoint;
+
+                    // This part I got mainly through trial and error.
                     var scale = Easing.InCirc.Ease(1 - (direction.Length() / depth));
                     var normal = Vector2.Normalize(direction) * (scale + height / 4);
                     var z = Math.Clamp(scale, 0, 1) * height;

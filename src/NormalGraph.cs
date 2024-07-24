@@ -9,6 +9,7 @@ internal partial class NormalGraph
 {
     public static readonly RgbaVector Neutral = new(0.5f, 0.5f, 1, 1);
 
+    // TODO: allow X and Y flipping
     public static RgbaVector GetColor(Vector3 normal)
     {
         if (normal.Length() == 0) {
