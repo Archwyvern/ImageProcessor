@@ -9,7 +9,13 @@ The end goal of this project is to be able to run the program on a directory of 
 and for all normal maps (or any other things) to have consistent outputs regardless
 of image dimensions or alpha density.
 
-TODO: Make for all images in directory.
+TODO:
+- Make for all images in directory.
+- Add X, Y flipping
+
+Example:
+
+    [ImageProcessor.exe | ./ImageProcessor] normal-map example.png example_n.png --bevel-ratio=100 --bevel-height=25 --bevel-smooth=50 --emboss-height=5 --emboss-smooth=1
 
 Input             |  Output
 :-------------------------:|:-------------------------:
@@ -53,15 +59,15 @@ Input             |  Output
                                                        apply the bevel, this is
                                                        roughly based on the number
                                                        of opaque pixels
-            --bevel-height        100                  The percentage of ratio to do
+            --bevel-height        25                   The percentage of ratio to do
                                                        weird stuff with how much of
                                                        the image is faded. Less
                                                        makes the normals appear more
                                                        on the outside
-            --bevel-smooth        25                   Percentage of ratio to apply
+            --bevel-smooth        50                   Percentage of ratio to apply
                                                        gaussian blur after beveling,
                                                        alpha is preserved
-            --emboss-height       3                    The height percentage of the
+            --emboss-height       5                    The height percentage of the
                                                        emboss effect, higher
                                                        percentage results in more
                                                        vivid colors
