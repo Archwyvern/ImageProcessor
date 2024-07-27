@@ -13,21 +13,6 @@ namespace Archwyvern.Space2D.ImageProcessor;
 
 internal class BevelNormalMap
 {
-    public static readonly ParallelOptions _parallelOptions = new() {
-
-        MaxDegreeOfParallelism = 4
-    };
-
-    static BevelNormalMap()
-    {
-        _parallelOptions = new();
-
-        // Either Windows doesn't like too many threads or my multithreading sucks.
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
-            _parallelOptions.MaxDegreeOfParallelism = 4;
-        }
-    }
-
     private static readonly Point[] _directions = [
         new(1, 0),
         new(0, 1),
@@ -72,7 +57,7 @@ internal class BevelNormalMap
 
         var normals = new Vector3[w, h];
 
-        Parallel.For(0, h, _parallelOptions, y => {
+        Parallel.For(0, h, y => {
             for (int x = 0; x < w; x++) {
                 var queryPoint = new Point(x, y);
 
@@ -150,7 +135,7 @@ internal class BevelNormalMap
         Vector3[,] smoothed = new Vector3[w, h];
 
         // Apply horizontal Gaussian blur
-        Parallel.For(0, h, _parallelOptions, y =>
+        Parallel.For(0, h, y =>
         {
             for (int x = 0; x < w; x++)
             {
@@ -185,7 +170,7 @@ internal class BevelNormalMap
         });
 
         // Apply vertical Gaussian blur
-        Parallel.For(0, w, new ParallelOptions() { MaxDegreeOfParallelism = 4 }, x =>
+        Parallel.For(0, w, x =>
         {
             for (int y = 0; y < h; y++)
             {

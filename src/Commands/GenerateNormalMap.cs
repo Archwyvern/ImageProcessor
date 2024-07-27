@@ -3,6 +3,7 @@ using SixLabors.ImageSharp.PixelFormats;
 using Spectre.Console;
 using Spectre.Console.Cli;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
@@ -10,6 +11,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using System.Text.RegularExpressions;
+using static System.Net.WebRequestMethods;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Archwyvern.Space2D.ImageProcessor.Commands;
 
@@ -17,37 +21,27 @@ internal sealed class GenerateNormalMap : Command<GenerateNormalMap.Settings>
 {
     public class Settings : CommandSettings
     {
-        [Description("Path to source of a single image")]
-        [CommandArgument(0, "[Source]")]
+        [Description("Path to source of a single image or source directory")]
+        [CommandArgument(0, "<Source>")]
         public string Source { get; set; }
-
-        [Description("Path to output of a single image")]
-        [CommandArgument(1, "[Output]")]
-        public string Output { get; set; }
 
         [Description("The suffix to add to the output file(s) e.g. ship.png => ship_n.png, ignored if output argument is specified")]
         [CommandOption("-s|--suffix")]
         [DefaultValue("_n")]
         public string Suffix { get; set; }
 
-        [Description("Path to output of a single image")]
-        [CommandOption("-d|--source-directory")]
-        public string SourceDirectory { get; init; }
-
         [Description("Recursively search through source-directory")]
         [CommandOption("-r|--recursive")]
         [DefaultValue(false)]
         public bool Recursive { get; init; }
 
-        [CommandOption("-o|--output-directory")]
-        public string OutputDirectory { get; init; }
+        [Description("Regex for file names to include")]
+        [CommandOption("-i|--include")]
+        public string[] Include { get; init; }
 
-        [Description(
-            "Regex for file name filter, by default allows PNG files without the _n suffix, " +
-            "or if output-suffix is specified any PNG without that suffix.")]
-        [CommandOption("-f|--file-filter")]
-        [DefaultValue(@"^.+?(?<!_n)\.png$")]
-        public string FileFilter { get; init; }
+        [Description("Regex for file names to exclude")]
+        [CommandOption("-e|--exclude")]
+        public string[] Exclude { get; init; }
 
         [Description("The percentage of depth to apply the bevel, this is roughly based on the number of opaque pixels.")]
         [CommandOption("--bevel-ratio")]
@@ -75,24 +69,35 @@ internal sealed class GenerateNormalMap : Command<GenerateNormalMap.Settings>
         public int EmbossSmooth { get; init; }
     }
 
-
     public override int Execute(CommandContext context, Settings settings)
     {
-        if (settings.Source != null) {
-            var output = settings.Output;
+        var include = new List<string>(settings.Include ?? []);
+        var exclude = new List<string>(settings.Exclude ?? []);
 
-            output ??= Path.Combine(
-                Path.GetDirectoryName(settings.Source),
+        include.Add("\\.png$");
+        exclude.Add($"{settings.Suffix}\\.png$");
+
+        var sourceFiles = new List<string>();
+
+        if (Directory.Exists(settings.Source)) {
+            GetFiles(settings.Source, sourceFiles, include, exclude, settings.Recursive);
+        } else {
+            sourceFiles.Add(settings.Source);
+        }
+
+        foreach (var file in sourceFiles) {
+            var output = Path.Combine(
+                Path.GetDirectoryName(file),
                 string.Format(
                     "{0}{1}{2}",
-                    Path.GetFileNameWithoutExtension(settings.Source),
+                    Path.GetFileNameWithoutExtension(file),
                     settings.Suffix,
-                    Path.GetExtension(settings.Source)
+                    Path.GetExtension(file)
                 )
             );
 
             ProcessFile(
-                settings.Source,
+                file,
                 output,
                 settings.BevelRatio / 100,
                 settings.BevelHeight / 100,
@@ -109,6 +114,17 @@ internal sealed class GenerateNormalMap : Command<GenerateNormalMap.Settings>
         AnsiConsole.MarkupLine($"Emboss Smooth: [blue]{settings.EmbossSmooth}[/]");
 
         return 0;
+    }
+
+    private static void ProcessDirectory(
+        string source,
+        float bevelRatio,
+        float bevelHeight,
+        float bevelSmooth,
+        float embossHeight,
+        int embossSmooth
+    ) {
+        
     }
 
     private static void ProcessFile(
@@ -142,5 +158,53 @@ internal sealed class GenerateNormalMap : Command<GenerateNormalMap.Settings>
         AnsiConsole.MarkupLine($"[blue]{source}[/] -> [green]{output}[/] : {elapsed}s");
 
         image.Save(Path.GetFullPath(output));
+    }
+
+    private static void GetFiles(
+        string directory,
+        List<string> files,
+        List<string> include,
+        List<string> exclude,
+        bool recursive = false
+    ) {
+        foreach (var file in Directory.GetFiles(directory)) {
+            var allow = true;
+
+            foreach (var inc in include) {
+                var includeR = new Regex(inc);
+
+                if (!includeR.IsMatch(file)) {
+                    allow = false;
+                    break;
+                }
+            }
+
+            if (!allow) {
+                continue;
+            }
+
+            foreach (var exc in exclude) {
+                var excludeR = new Regex(exc);
+
+                if (excludeR.IsMatch(file)) {
+                    allow = false;
+                    break;
+                }
+            }
+
+            if (!allow) {
+                continue;
+            }
+
+            files.Add(file);
+        }
+
+        if (recursive) {
+            var directories = Directory.GetDirectories(directory);
+
+            foreach (var dir in Directory.GetDirectories(directory)) {
+                GetFiles(dir, files, include, exclude, true);
+            }
+        }
     }
 }

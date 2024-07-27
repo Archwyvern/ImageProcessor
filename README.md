@@ -2,8 +2,6 @@ Archwyvern.Space2D.ImageProcessor
 =================================
 
 This is a program I made (am making) to generate normal maps for 2D sprites.
-It doesn't work very well on Windows because I suck at multithreading so I had to limit the number of
-parallel threads to 4 when on the Windows OS. It's still sort of fast, but might complain sometimes.
 
 The end goal of this project is to be able to run the program on a directory of images
 and for all normal maps (or any other things) to have consistent outputs regardless

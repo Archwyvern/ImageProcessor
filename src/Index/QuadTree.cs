@@ -72,28 +72,25 @@ internal class QuadTree : IPointIndex
 
             QuadTreeNode[] children;
 
-            lock (_lock)
+            children = (QuadTreeNode[])Children.Clone();
+
+            if (!Bounds.IntersectsWith(new Rectangle(
+                (int)queryPoint.X - (int)MathF.Sqrt(maxDistanceSquared), 
+                (int)queryPoint.Y - (int)MathF.Sqrt(maxDistanceSquared), 
+                (int)(2 * MathF.Sqrt(maxDistanceSquared)), 
+                (int)(2 * MathF.Sqrt(maxDistanceSquared))
+            ))) {
+                return false;
+            }
+
+            foreach (var point in Points)
             {
-                children = (QuadTreeNode[])Children.Clone();
-
-                if (!Bounds.IntersectsWith(new Rectangle(
-                    (int)queryPoint.X - (int)MathF.Sqrt(maxDistanceSquared), 
-                    (int)queryPoint.Y - (int)MathF.Sqrt(maxDistanceSquared), 
-                    (int)(2 * MathF.Sqrt(maxDistanceSquared)), 
-                    (int)(2 * MathF.Sqrt(maxDistanceSquared))
-                ))) {
-                    return false;
-                }
-
-                foreach (var point in Points)
+                var currentDistanceSquared = Vector2.DistanceSquared(point, queryPoint);
+                if (currentDistanceSquared < nearestDistanceSquared && currentDistanceSquared <= maxDistanceSquared)
                 {
-                    var currentDistanceSquared = Vector2.DistanceSquared(point, queryPoint);
-                    if (currentDistanceSquared < nearestDistanceSquared && currentDistanceSquared <= maxDistanceSquared)
-                    {
-                        nearestDistanceSquared = currentDistanceSquared;
-                        nearestPoint = point;
-                        found = true;
-                    }
+                    nearestDistanceSquared = currentDistanceSquared;
+                    nearestPoint = point;
+                    found = true;
                 }
             }
 
