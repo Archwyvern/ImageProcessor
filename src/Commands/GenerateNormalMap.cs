@@ -43,6 +43,10 @@ internal sealed class GenerateNormalMap : Command<GenerateNormalMap.Settings>
         [CommandOption("-e|--exclude")]
         public string[] Exclude { get; init; }
 
+        [Description("Output directory")]
+        [CommandOption("-o|--output")]
+        public string Output { get; init; }
+
         [Description("The percentage of depth to apply the bevel, this is roughly based on the number of opaque pixels.")]
         [CommandOption("--bevel-ratio")]
         [DefaultValue(100f)]
@@ -78,9 +82,11 @@ internal sealed class GenerateNormalMap : Command<GenerateNormalMap.Settings>
         exclude.Add($"{settings.Suffix}\\.png$");
 
         var sourceFiles = new List<string>();
+        var isSourceDir = false;
 
         if (Directory.Exists(settings.Source)) {
             GetFiles(settings.Source, sourceFiles, include, exclude, settings.Recursive);
+            isSourceDir = true;
         } else {
             sourceFiles.Add(settings.Source);
         }
@@ -95,6 +101,12 @@ internal sealed class GenerateNormalMap : Command<GenerateNormalMap.Settings>
                     Path.GetExtension(file)
                 )
             );
+
+            if (isSourceDir && settings.Output != null) {
+                output = settings.Output + output[settings.Source.Length..];
+
+                Directory.CreateDirectory(Path.GetDirectoryName(output));
+            }
 
             ProcessFile(
                 file,
