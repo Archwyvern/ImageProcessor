@@ -16,11 +16,9 @@ class Program
         app.Configure(config =>
         {
             config.AddCommand<GenerateNormalMap>("normal-map")
-                .WithDescription("Generate a normal map for an image or all images in a directory")
-                .WithExample("normal-map", "ship.php")
-                .WithExample("normal-map", "ship.php", "ship_n.png")
-                .WithExample("normal-map", "ship.php", "-suffix=_n")
-                .WithExample("normal-map", "-d=./source", "-o=./output");
+                .WithDescription("Generate a normal map for an image or all images in a directory"); ;
+            config.AddCommand<GenerateAlphaBitmap>("alpha-bitmap")
+                .WithDescription("Generate an alpha-bitmap for an image or all images in a directory");
         });
 
 #if DEBUG
