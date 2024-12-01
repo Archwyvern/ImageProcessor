@@ -70,6 +70,7 @@ func CommandGenerate(ctx *cli.Context) error {
 
 	var options = GenerateOptions{
 		Excludes:     ctx.StringSlice("exclude"),
+		Overwrite:    ctx.Bool("overwrite"),
 		FileMarker:   ctx.String("suffix"),
 		BevelRatio:   ctx.Float64("bevel-ratio") / 100,
 		BevelHeight:  ctx.Float64("bevel-height") / 100,

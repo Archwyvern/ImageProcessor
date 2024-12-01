@@ -16,6 +16,7 @@ var SupportedExtension = ".png"
 
 type GenerateOptions struct {
 	Excludes     []string
+	Overwrite    bool
 	FileMarker   string
 	BevelRatio   float64
 	BevelHeight  float64
@@ -40,6 +41,11 @@ func ScanAndGenerate(dir string, options GenerateOptions) ([]GenerateResult, err
 	var results = make([]GenerateResult, len(scanResults))
 
 	forError := parallel.For(0, len(scanResults), func(i int, errs chan<- error) {
+		if !options.Overwrite && scanResults[i].Normals != "" {
+			errs <- nil
+			return
+		}
+
 		generationResult, err := Generate(scanResults[i].Texture, options)
 
 		if err != nil {

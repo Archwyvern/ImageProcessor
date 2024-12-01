@@ -50,6 +50,11 @@ func main() {
 								Usage:   "List of filename regular expressions for exclusion",
 								Aliases: []string{"e"},
 							},
+							&cli.BoolFlag{
+								Name:  "overwrite",
+								Value: false,
+								Usage: "Overwrite existing normal maps",
+							},
 							&cli.StringFlag{
 								Name:    "suffix",
 								Value:   "_n",
