@@ -20,7 +20,6 @@ Example (with defaults):
 Input             |  Output
 :-------------------------:|:-------------------------:
 ![alt text](example.png "Input")  |  ![alt text](example_n.png "Output")
-![alt text](example_shining_1.png "Shining") | ![alt text](example_shining_2.png "Shining")
 
     $ ./imageprocessor normalmap generate --help
     NAME:
@@ -49,6 +48,11 @@ Example shining with yellow and orange:
         --color=f6da49
         --color=cd1621
         example.png
+
+
+Default             |  Custom
+:-------------------------:|:-------------------------:
+![alt text](example_shining_1.png "Default") | ![alt text](example_shining_2.png "Custom")
 
 Creating a shining requires that the normal map exists first, and you must specify the suffix if you haven't use the default.
 
