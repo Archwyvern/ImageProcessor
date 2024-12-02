@@ -46,7 +46,7 @@ func Scan(targetPath string, marker string, excludes []string) ([]ScanResult, er
 			}
 
 			if filepath.Ext(info.Name()) == SupportedExtension {
-				if normals, valid := ResolveNormalsFilePath(path, marker); valid {
+				if normals, valid := ResolveSuffixedFilePath(path, marker); valid {
 					var result = ScanResult{
 						Texture: path,
 					}
@@ -70,7 +70,7 @@ func Scan(targetPath string, marker string, excludes []string) ([]ScanResult, er
 	return results, nil
 }
 
-func ResolveNormalsFilePath(texture string, marker string) (string, bool) {
+func ResolveSuffixedFilePath(texture string, marker string) (string, bool) {
 	var name, _ = strings.CutSuffix(filepath.Base(texture), SupportedExtension)
 	marker = resolveMarker(marker)
 

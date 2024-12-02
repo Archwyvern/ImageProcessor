@@ -26,3 +26,22 @@ func NormalToColor(normal vector3.Vector3) color.NRGBA {
 		A: uint8(255),
 	}
 }
+
+func ColorToNormal(c color.NRGBA) vector3.Vector3 {
+	// Convert color components from uint8 [0, 255] to float64 [0, 1]
+	r := float64(c.R) / 255.0
+	g := float64(c.G) / 255.0
+	b := float64(c.B) / 255.0
+
+	// Invert the transformations applied in NormalToColor
+	normalX := 2 * (r - 0.5)
+	normalY := 2 * (0.5 - g)
+	normalZ := 1.0 - b
+
+	// Create and return the normal vector
+	return vector3.Vector3{
+		X: normalX,
+		Y: normalY,
+		Z: normalZ,
+	}
+}

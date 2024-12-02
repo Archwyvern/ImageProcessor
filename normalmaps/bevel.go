@@ -49,7 +49,7 @@ func getBevelNormals(img image.NRGBA, ratio float64, height float64, smooth floa
 		},
 	})
 
-	for p, _ := range edges {
+	for p := range edges {
 		err := tree.Add(orb.Point{
 			float64(p.X),
 			float64(p.Y),

@@ -76,7 +76,7 @@ func ScanAndGenerate(dir string, options GenerateOptions) ([]GenerateResult, err
 }
 
 func Generate(file string, options GenerateOptions) (*GenerateResult, error) {
-	normals, valid := ResolveNormalsFilePath(file, options.FileMarker)
+	normals, valid := ResolveSuffixedFilePath(file, options.FileMarker)
 
 	if !valid {
 		return nil, fmt.Errorf("the provided file is already a normal map: %s", file)

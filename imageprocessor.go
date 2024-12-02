@@ -92,6 +92,52 @@ func main() {
 							},
 						},
 					},
+					{
+						Name:      "shine",
+						Action:    normalmaps.CommandShine,
+						Usage:     "Create an example texture with light applied. Requires a texture with a normal map.",
+						Args:      true,
+						ArgsUsage: "[directory or file]",
+						Flags: []cli.Flag{
+							&cli.StringSliceFlag{
+								Name:    "exclude",
+								Usage:   "List of filename regular expressions for exclusion",
+								Aliases: []string{"e"},
+							},
+							&cli.StringFlag{
+								Name:    "suffix",
+								Value:   "_n",
+								Usage:   "The normal map suffix",
+								Aliases: []string{"s"},
+							},
+							&cli.Float64SliceFlag{
+								Name:  "direction",
+								Value: cli.NewFloat64Slice(45, -135),
+								Usage: "The direction of the sun from north in degrees, clamped between -180 and 180",
+							},
+							&cli.Float64SliceFlag{
+								Name:  "energy",
+								Value: cli.NewFloat64Slice(1, 0.8),
+								Usage: "Sun's energy, essentially a color multiplier, baseline is 1, 0.5 is half, 2 is double",
+							},
+							&cli.StringSliceFlag{
+								Name:  "color",
+								Value: cli.NewStringSlice("ffca83", "c6d5f4"),
+								Usage: "Color of the light in 24bit hexadecimal",
+							},
+							&cli.Float64Flag{
+								Name:  "shadow",
+								Value: 0.3,
+								Usage: "Percentage of base light level, for example 0.3 will darken the image to 30%% color is no light is present",
+							},
+							&cli.Float64Flag{
+								Name:  "reaction",
+								Value: 10,
+								Usage: "How reactive the texture is to the light, this is affected by shadow, a darker shadow requires a higher reaction\n" +
+									"PixelRGB = LightRGB * TextureRGB * Energy * NormalDot * Reaction",
+							},
+						},
+					},
 				},
 			},
 		},

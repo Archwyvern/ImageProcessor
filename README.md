@@ -7,7 +7,7 @@ Current tools:
 TODO:
 - Add X, Y flipping
 
-Example with defaults:
+Example (with defaults):
 
     [imageprocessor[.exe]] normalmap generate \
         --bevel-ratio=100 \
@@ -15,11 +15,12 @@ Example with defaults:
         --bevel-smooth=50 \
         --emboss-height=1 \
         --emboss-smooth=1 \
-        example/example.png
+        example.png
 
 Input             |  Output
 :-------------------------:|:-------------------------:
 ![alt text](example.png "Input")  |  ![alt text](example_n.png "Output")
+![alt text](example_shining_1.png "Shining") | ![alt text](example_shining_2.png "Shining")
 
     $ ./imageprocessor normalmap generate --help
     NAME:
@@ -37,5 +38,36 @@ Input             |  Output
     --emboss-height value                                    The height percentage of the emboss effect, higher percentage results in more vivid colors. (default: 1)
     --emboss-smooth value                                    The number of pixels to blur the source image before applying emboss. (default: 1)
     --help, -h                                               show help
+
+Example shining with yellow and orange:
+
+    [imageprocessor[.exe]] normalmap shine \
+        --direction=45
+        --direction=-135
+        --energy=1
+        --energy=0.8
+        --color=f6da49
+        --color=cd1621
+        example.png
+
+Creating a shining requires that the normal map exists first, and you must specify the suffix if you haven't use the default.
+
+    ./imageprocessor normalmap shine --help
+    NAME:
+    imageprocessor normalmap shine - Create an example texture with light applied. Requires a texture with a normal map.
+
+    USAGE:
+    imageprocessor normalmap shine [command options] [directory or file]
+
+    OPTIONS:
+    --exclude value, -e value [ --exclude value, -e value ]  List of filename regular expressions for exclusion
+    --suffix value, -s value                                 The normal map suffix (default: "_n")
+    --direction value [ --direction value ]                  The direction of the sun from north in degrees, clamped between -180 and 180 (default: 45, -135)
+    --energy value [ --energy value ]                        Sun's energy, essentially a color multiplier, baseline is 1, 0.5 is half, 2 is double (default: 1, 0.8)
+    --color value [ --color value ]                          Color of the light in 24bit hexadecimal (default: "ffca83", "c6d5f4")
+    --shadow value                                           Percentage of base light level, for example 0.3 will darken the image to 30%% color is no light is present (default: 0.3)
+    --reaction value                                         How reactive the texture is to the light, this is affected by shadow, a darker shadow requires a higher reaction
+        PixelRGB = LightRGB * TextureRGB * Energy * NormalDot * Reaction (default: 10)
+    --help, -h  show help
 
 Example Image: https://imgbin.com/png/9zPr0DJe/galaga-spaceship-s80-spaceship-free-spacecraft-png
