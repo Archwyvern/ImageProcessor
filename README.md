@@ -1,6 +1,18 @@
 Archwyvern / ImageProcessor
 =================================
 
+The main goal of this project is to make the process of creating normal map textures for game assets a faster one.
+If you have used tools that create normal maps for you then you will be familiar with what this program does. The main difference
+is how they are processed.
+
+Generally each image you want to create a normal map from requires three things, a bevel distance, bevel height, and an emboss height.
+What this program aims to do is take ratios of these parameters and apply them to any image in a consistent manner. Usually when you
+generate a normal map in an editor you set a bevel distance, height and smoothing based on the size of your textre. What this program does
+instead is takes the ratios and applies them based on the density of the texture.
+
+What this means is, you can run the tool with the same settings for any image regardless of size and the result will be almost identical.
+Then you can run this program for an entire directory hierarchy and process all images in your project in a few seconds.
+
 ### Normal Map
 
 Example (with defaults):
