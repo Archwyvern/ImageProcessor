@@ -1,11 +1,7 @@
 Archwyvern / ImageProcessor
 =================================
 
-Current tools:
-- Normal map generation
-
-TODO:
-- Add X, Y flipping
+### Normal Map
 
 Example (with defaults):
 
@@ -38,6 +34,8 @@ Input             |  Output
     --emboss-smooth value                                    The number of pixels to blur the source image before applying emboss. (default: 1)
     --help, -h                                               show help
 
+### Shining
+
 Example shining with yellow and orange:
 
     [imageprocessor[.exe]] normalmap shine \
@@ -48,7 +46,6 @@ Example shining with yellow and orange:
         --color=f6da49
         --color=cd1621
         example.png
-
 
 Default             |  Custom
 :-------------------------:|:-------------------------:
