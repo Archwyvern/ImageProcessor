@@ -133,8 +133,7 @@ func main() {
 							&cli.Float64Flag{
 								Name:  "reaction",
 								Value: 10,
-								Usage: "How reactive the texture is to the light, this is affected by shadow, a darker shadow requires a higher reaction\n" +
-									"PixelRGB = LightRGB * TextureRGB * Energy * NormalDot * Reaction",
+								Usage: "How reactive the texture is to the light, this is affected by shadow, a darker shadow requires a higher reaction",
 							},
 						},
 					},

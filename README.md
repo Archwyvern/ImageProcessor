@@ -79,8 +79,11 @@ Creating a shining requires that the normal map exists first, and you must speci
     --energy value [ --energy value ]                        Sun's energy, essentially a color multiplier, baseline is 1, 0.5 is half, 2 is double (default: 1, 0.8)
     --color value [ --color value ]                          Color of the light in 24bit hexadecimal (default: "ffca83", "c6d5f4")
     --shadow value                                           Percentage of base light level, for example 0.3 will darken the image to 30%% color is no light is present (default: 0.3)
-    --reaction value                                         How reactive the texture is to the light, this is affected by shadow, a darker shadow requires a higher reaction
-        PixelRGB = LightRGB * TextureRGB * Energy * NormalDot * Reaction (default: 10)
+    --reaction value                                         How reactive the texture is to the light, this is affected by shadow, a darker shadow requires a higher reaction (default: 10)
     --help, -h  show help
+
+    PixelRGB = 
+        (PixelRGB * Shadow) +
+        (PixelRGB * Shadow * LightRGB * Energy * Normal.Dot(Direction) * Reaction)
 
 Example Image: https://imgbin.com/png/9zPr0DJe/galaga-spaceship-s80-spaceship-free-spacecraft-png
