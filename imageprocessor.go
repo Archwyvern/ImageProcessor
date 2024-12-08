@@ -146,14 +146,3 @@ func main() {
 		log.Fatal(err)
 	}
 }
-
-/*
-
-imageprocessor.exe normalmap generate --bevel-height=50 --emboss-height=0 yesy_biew12.png
-
-imageprocessor.exe normalmap shine \
-    --direction=90 \
-    --energy=4 \
-    --shadow=0.1 \
-    --reaction=12 \
-    yesy_biew12.png
