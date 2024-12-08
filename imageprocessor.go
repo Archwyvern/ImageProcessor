@@ -112,17 +112,17 @@ func main() {
 							},
 							&cli.Float64SliceFlag{
 								Name:  "direction",
-								Value: cli.NewFloat64Slice(45, -135),
+								Value: cli.NewFloat64Slice(45),
 								Usage: "The direction of the sun from north in degrees, clamped between -180 and 180",
 							},
 							&cli.Float64SliceFlag{
 								Name:  "energy",
-								Value: cli.NewFloat64Slice(1, 0.8),
+								Value: cli.NewFloat64Slice(1),
 								Usage: "Sun's energy, essentially a color multiplier, baseline is 1, 0.5 is half, 2 is double",
 							},
 							&cli.StringSliceFlag{
 								Name:  "color",
-								Value: cli.NewStringSlice("ffca83", "c6d5f4"),
+								Value: cli.NewStringSlice("ffca83"),
 								Usage: "Color of the light in 24bit hexadecimal",
 							},
 							&cli.Float64Flag{
@@ -146,3 +146,14 @@ func main() {
 		log.Fatal(err)
 	}
 }
+
+/*
+
+imageprocessor.exe normalmap generate --bevel-height=50 --emboss-height=0 yesy_biew12.png
+
+imageprocessor.exe normalmap shine \
+    --direction=90 \
+    --energy=4 \
+    --shadow=0.1 \
+    --reaction=12 \
+    yesy_biew12.png
