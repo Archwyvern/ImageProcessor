@@ -48,20 +48,28 @@ Input             |  Output
 
 ### Shining
 
-Example shining with yellow and orange:
+Example shining with default:
 
     [imageprocessor[.exe]] normalmap shine \
-        --direction=45
-        --direction=-135
-        --energy=1
-        --energy=0.8
-        --color=f6da49
-        --color=cd1621
         example.png
 
-Default             |  Custom
+Example shining with rainbow:
+
+    [imageprocessor[.exe]] normalmap shine \
+        --color="FF0000" \
+        --color="00FF00" \
+        --color="0000FF" \
+        --direction=0 \
+        --direction=120 \
+        --direction=-120 \
+        --energy=1 \
+        --energy=1 \
+        --energy=1 \
+        example.png
+
+Default             |  Rainbow
 :-------------------------:|:-------------------------:
-![alt text](example_shining_1.png "Default") | ![alt text](example_shining_2.png "Custom")
+![alt text](example_shining_1.png "Default") | ![alt text](example_shining_2.png "Rainbow")
 
 Creating a shining requires that the normal map exists first, and you must specify the suffix if you haven't use the default.
 
@@ -75,12 +83,12 @@ Creating a shining requires that the normal map exists first, and you must speci
     OPTIONS:
     --exclude value, -e value [ --exclude value, -e value ]  List of filename regular expressions for exclusion
     --suffix value, -s value                                 The normal map suffix (default: "_n")
-    --direction value [ --direction value ]                  The direction of the sun from north in degrees, clamped between -180 and 180 (default: 45, -135)
-    --energy value [ --energy value ]                        Sun's energy, essentially a color multiplier, baseline is 1, 0.5 is half, 2 is double (default: 1, 0.8)
-    --color value [ --color value ]                          Color of the light in 24bit hexadecimal (default: "ffca83", "c6d5f4")
+    --direction value [ --direction value ]                  The direction of the sun from north in degrees, clamped between -180 and 180 (default: 45)
+    --energy value [ --energy value ]                        Sun's energy, essentially a color multiplier, baseline is 1, 0.5 is half, 2 is double (default: 1)
+    --color value [ --color value ]                          Color of the light in 24bit hexadecimal (default: "ffca83")
     --shadow value                                           Percentage of base light level, for example 0.3 will darken the image to 30%% color is no light is present (default: 0.3)
     --reaction value                                         How reactive the texture is to the light, this is affected by shadow, a darker shadow requires a higher reaction (default: 10)
-    --help, -h  show help
+    --help, -h                                               show help
 
     PixelRGB = 
         (PixelRGB * Shadow) +
