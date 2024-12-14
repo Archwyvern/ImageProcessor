@@ -6,6 +6,7 @@ import (
 	"imageprocessor/parallel"
 	"imageprocessor/util"
 	"math"
+	"sort"
 
 	"github.com/deeean/go-vector/vector3"
 	"github.com/paulmach/orb"
@@ -38,6 +39,18 @@ func getBevelNormals(img image.NRGBA, ratio float64, height float64, smooth floa
 		}
 	}
 
+	var edgePoints []orb.Point
+	for p := range edges {
+		edgePoints = append(edgePoints, orb.Point{float64(p.X), float64(p.Y)})
+	}
+	// Sort edgePoints based on some criteria, for example, by X then Y.
+	sort.Slice(edgePoints, func(i, j int) bool {
+		if edgePoints[i].X() == edgePoints[j].X() {
+			return edgePoints[i].Y() < edgePoints[j].Y()
+		}
+		return edgePoints[i].X() < edgePoints[j].X()
+	})
+
 	tree := quadtree.New(orb.Bound{
 		Min: orb.Point{
 			-1,
@@ -49,10 +62,10 @@ func getBevelNormals(img image.NRGBA, ratio float64, height float64, smooth floa
 		},
 	})
 
-	for p := range edges {
+	for _, p := range edgePoints {
 		err := tree.Add(orb.Point{
-			float64(p.X),
-			float64(p.Y),
+			float64(p.X()),
+			float64(p.Y()),
 		})
 
 		if err != nil {
@@ -84,7 +97,6 @@ func getBevelNormals(img image.NRGBA, ratio float64, height float64, smooth floa
 
 					direction := eV.Sub(&pV)
 
-					// ease: -(Math.Sqrt(1 - t * t) - 1);
 					scale := util.EaseInCirc(1 - direction.Magnitude()/depth)
 					normal := direction.Normalize().MulScalar(scale + height/4)
 					z := util.Clamp(scale, 0, 1) * height
