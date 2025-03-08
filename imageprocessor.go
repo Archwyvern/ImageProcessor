@@ -2,6 +2,7 @@ package main
 
 import (
 	"imageprocessor/normalmaps"
+	"imageprocessor/rotation"
 	"log"
 	"os"
 
@@ -138,6 +139,13 @@ func main() {
 						},
 					},
 				},
+			},
+			{
+				Name:      "rotate",
+				Action:    rotation.CommandRotate,
+				Usage:     "Rotate a texture or every texture recursively",
+				Args:      true,
+				ArgsUsage: "[num right angles] [directory or file] [output directory or file]",
 			},
 		},
 	}
