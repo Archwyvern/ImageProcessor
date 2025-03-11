@@ -15,14 +15,15 @@ var DefaultFileMarker = "_n"
 var SupportedExtension = ".png"
 
 type GenerateOptions struct {
-	Excludes     []string
-	Overwrite    bool
-	FileMarker   string
-	BevelRatio   float64
-	BevelHeight  float64
-	BevelSmooth  float64
-	EmbossHeight float64
-	EmbossSmooth int
+	Excludes      []string
+	Overwrite     bool
+	FileMarker    string
+	BevelRatio    float64
+	BevelHeight   float64
+	BevelSmooth   float64
+	EmbossHeight  float64
+	EmbossSmooth  int
+	EmbossDenoise float64
 }
 
 type GenerateResult struct {

@@ -21,7 +21,7 @@ func process(reader *bufio.Reader, writer *bufio.Writer, options GenerateOptions
 	img := convertToNRGBAImage(baseimg)
 
 	bNormals := getBevelNormals(*img, options.BevelRatio, options.BevelHeight, options.BevelSmooth)
-	eNormals := getEmbossNormals(*img, options.EmbossHeight, options.EmbossSmooth)
+	eNormals := getEmbossNormals(*img, options.EmbossHeight, options.EmbossSmooth, options.EmbossDenoise)
 
 	w := img.Bounds().Size().X
 	h := img.Bounds().Size().Y

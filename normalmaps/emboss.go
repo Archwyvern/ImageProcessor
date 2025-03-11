@@ -5,12 +5,13 @@ import (
 	"image/color"
 	"imageprocessor/parallel"
 	"imageprocessor/util"
+	"math"
 
 	"github.com/deeean/go-vector/vector2"
 	"github.com/deeean/go-vector/vector3"
 )
 
-func getEmbossNormals(img image.NRGBA, height float64, smooth int) [][]vector3.Vector3 {
+func getEmbossNormals(img image.NRGBA, height float64, smooth int, denoise float64) [][]vector3.Vector3 {
 	w := img.Bounds().Dx()
 	h := img.Bounds().Dy()
 
@@ -34,19 +35,22 @@ func getEmbossNormals(img image.NRGBA, height float64, smooth int) [][]vector3.V
 				continue
 			}
 
-			topLeft := getAdjacentLevel(grayscale, x-1, y-1, w, h)
-			top := getAdjacentLevel(grayscale, x, y-1, w, h)
-			topRight := getAdjacentLevel(grayscale, x+1, y-1, w, h)
-			left := getAdjacentLevel(grayscale, x-1, y, w, h)
-			right := getAdjacentLevel(grayscale, x+1, y, w, h)
-			bottomLeft := getAdjacentLevel(grayscale, x-1, y+1, w, h)
-			bottom := getAdjacentLevel(grayscale, x, y+1, w, h)
-			bottomRight := getAdjacentLevel(grayscale, x+1, y+1, w, h)
+			center := grayscale[x][y]
+
+			topLeft := getAdjacentLevel(center, grayscale, x-1, y-1, w, h, denoise)
+			top := getAdjacentLevel(center, grayscale, x, y-1, w, h, denoise)
+			topRight := getAdjacentLevel(center, grayscale, x+1, y-1, w, h, denoise)
+			left := getAdjacentLevel(center, grayscale, x-1, y, w, h, denoise)
+			right := getAdjacentLevel(center, grayscale, x+1, y, w, h, denoise)
+			bottomLeft := getAdjacentLevel(center, grayscale, x-1, y+1, w, h, denoise)
+			bottom := getAdjacentLevel(center, grayscale, x, y+1, w, h, denoise)
+			bottomRight := getAdjacentLevel(center, grayscale, x+1, y+1, w, h, denoise)
 
 			dx := (topRight + 2*right + bottomRight) - (topLeft + 2*left + bottomLeft)
 			dy := (bottomLeft + 2*bottom + bottomRight) - (topLeft + 2*top + topRight)
 
 			normal := vector2.Vector2{X: -dx, Y: -dy}
+
 			a := normal.MulScalar(10 * height)
 
 			normals[x][y] = vector3.Vector3{
@@ -61,9 +65,11 @@ func getEmbossNormals(img image.NRGBA, height float64, smooth int) [][]vector3.V
 	return blur(normals, bitmap, w, h, float64(smooth))
 }
 
-func getAdjacentLevel(matrix [][]float64, x int, y int, w int, h int) float64 {
-	if x < 0 || y < 0 || x >= w || y >= h {
-		return 0
+func getAdjacentLevel(center float64, matrix [][]float64, x int, y int, w int, h int, denoise float64) float64 {
+	skip := (x < 0 || y < 0 || x >= w || y >= h) || math.Abs(center-matrix[x][y]) < denoise
+
+	if skip {
+		return center
 	}
 
 	return matrix[x][y]

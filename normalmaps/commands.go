@@ -72,14 +72,15 @@ func CommandGenerate(ctx *cli.Context) error {
 	}
 
 	var options = GenerateOptions{
-		Excludes:     ctx.StringSlice("exclude"),
-		Overwrite:    ctx.Bool("overwrite"),
-		FileMarker:   ctx.String("suffix"),
-		BevelRatio:   ctx.Float64("bevel-ratio") / 100,
-		BevelHeight:  ctx.Float64("bevel-height") / 100,
-		BevelSmooth:  ctx.Float64("bevel-smooth") / 100,
-		EmbossHeight: ctx.Float64("emboss-height") / 100,
-		EmbossSmooth: ctx.Int("emboss-smooth"),
+		Excludes:      ctx.StringSlice("exclude"),
+		Overwrite:     ctx.Bool("overwrite"),
+		FileMarker:    ctx.String("suffix"),
+		BevelRatio:    ctx.Float64("bevel-ratio") / 100,
+		BevelHeight:   ctx.Float64("bevel-height") / 100,
+		BevelSmooth:   ctx.Float64("bevel-smooth") / 100,
+		EmbossHeight:  ctx.Float64("emboss-height") / 100,
+		EmbossSmooth:  ctx.Int("emboss-smooth"),
+		EmbossDenoise: ctx.Float64("emboss-denoise") / 100,
 	}
 
 	if info.IsDir() {

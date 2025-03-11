@@ -91,6 +91,11 @@ func main() {
 								Value: 1,
 								Usage: "The number of pixels to blur the source image before applying emboss.",
 							},
+							&cli.Float64Flag{
+								Name:  "emboss-denoise",
+								Value: 30,
+								Usage: "The normal distance and color difference to ignore, reduces emboss on sutble changes.",
+							},
 						},
 					},
 					{
