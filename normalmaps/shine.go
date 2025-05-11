@@ -37,7 +37,7 @@ type ShineResult struct {
 }
 
 func ScanAndShine(dir string, options ShineOptions) ([]ShineResult, error) {
-	var scanResults, err = Scan(dir, options.FileMarker, options.Excludes)
+	var scanResults, err = Scan(dir, options.FileMarker, "", options.Excludes)
 
 	if err != nil {
 		return nil, err

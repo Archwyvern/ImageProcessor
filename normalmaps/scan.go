@@ -9,13 +9,18 @@ import (
 )
 
 type ScanResult struct {
-	Texture string
-	Normals string
+	Texture         string
+	Normals         string
+	NormalsOverride string
 }
 
-func Scan(targetPath string, marker string, excludes []string) ([]ScanResult, error) {
+func Scan(targetPath string, marker string, overrideMarker string, excludes []string) ([]ScanResult, error) {
 	if _, err := os.Stat(targetPath); os.IsNotExist(err) {
 		return nil, fmt.Errorf("directory %s does not exist", targetPath)
+	}
+
+	if overrideMarker != "" {
+		excludes = append(excludes, overrideMarker+".png$")
 	}
 
 	info, err := os.Lstat(targetPath)
@@ -53,6 +58,14 @@ func Scan(targetPath string, marker string, excludes []string) ([]ScanResult, er
 
 					if _, err := os.Stat(normals); err == nil {
 						result.Normals = normals
+					}
+
+					if overrideMarker != "" {
+						if override, valid := ResolveSuffixedFilePath(path, overrideMarker); valid {
+							if _, err := os.Stat(override); err == nil {
+								result.NormalsOverride = override
+							}
+						}
 					}
 
 					results = append(results, result)

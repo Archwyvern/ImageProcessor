@@ -62,6 +62,11 @@ func main() {
 								Usage:   "The normal map suffix",
 								Aliases: []string{"s"},
 							},
+							&cli.StringFlag{
+								Name:  "override-suffix",
+								Value: "_nx",
+								Usage: "The normal map suffix",
+							},
 							&cli.Float64Flag{
 								Name:  "bevel-ratio",
 								Value: 100,

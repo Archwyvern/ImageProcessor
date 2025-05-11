@@ -2,29 +2,39 @@ package normalmaps
 
 import (
 	"image/color"
-	"imageprocessor/util"
 
 	"github.com/deeean/go-vector/vector3"
 )
 
-var NeutralNormal = color.NRGBA{
+var Neutral = vector3.Vector3{
+	X: 0,
+	Y: 0,
+	Z: 1,
+}
+var NeutralColor = color.NRGBA{
 	R: 127,
 	G: 127,
 	B: 255,
 	A: 255,
 }
+var Transparent = color.NRGBA{
+	R: 127,
+	G: 127,
+	B: 255,
+	A: 0,
+}
 
 func NormalToColor(normal vector3.Vector3) color.NRGBA {
 	if normal.Magnitude() == 0 {
-		return NeutralNormal
+		return Transparent
 	}
 
-	return color.NRGBA{
-		R: uint8(255 * util.Clamp(0.5+normal.X/2, 0, 1)),
-		G: uint8(255 * util.Clamp(0.5-normal.Y/2, 0, 1)),
-		B: uint8(255 * (1 - normal.Z)),
-		A: uint8(255),
-	}
+	r := uint8((0.5 + 0.5*normal.X) * 255)
+	g := uint8((0.5 - 0.5*normal.Y) * 255)
+	// Z is already [0..1] for a normalized tangent-space normal:
+	b := uint8(normal.Z * 255)
+
+	return color.NRGBA{R: r, G: g, B: b, A: 255}
 }
 
 func ColorToNormal(c color.NRGBA) vector3.Vector3 {

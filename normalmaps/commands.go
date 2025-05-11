@@ -24,6 +24,7 @@ func CommandScan(ctx *cli.Context) error {
 	var results, err = Scan(
 		dir,
 		ctx.String("suffix"),
+		ctx.String("override-suffix"),
 		ctx.StringSlice("exclude"),
 	)
 
@@ -72,15 +73,16 @@ func CommandGenerate(ctx *cli.Context) error {
 	}
 
 	var options = GenerateOptions{
-		Excludes:      ctx.StringSlice("exclude"),
-		Overwrite:     ctx.Bool("overwrite"),
-		FileMarker:    ctx.String("suffix"),
-		BevelRatio:    ctx.Float64("bevel-ratio") / 100,
-		BevelHeight:   ctx.Float64("bevel-height") / 100,
-		BevelSmooth:   ctx.Float64("bevel-smooth") / 100,
-		EmbossHeight:  ctx.Float64("emboss-height") / 100,
-		EmbossSmooth:  ctx.Int("emboss-smooth"),
-		EmbossDenoise: ctx.Float64("emboss-denoise") / 100,
+		Excludes:           ctx.StringSlice("exclude"),
+		Overwrite:          ctx.Bool("overwrite"),
+		FileMarker:         ctx.String("suffix"),
+		OverrideFileMarker: ctx.String("override-suffix"),
+		BevelRatio:         ctx.Float64("bevel-ratio") / 100,
+		BevelHeight:        ctx.Float64("bevel-height") / 100,
+		BevelSmooth:        ctx.Float64("bevel-smooth") / 100,
+		EmbossHeight:       ctx.Float64("emboss-height") / 100,
+		EmbossSmooth:       ctx.Int("emboss-smooth"),
+		EmbossDenoise:      ctx.Float64("emboss-denoise") / 100,
 	}
 
 	if info.IsDir() {
@@ -94,7 +96,7 @@ func CommandGenerate(ctx *cli.Context) error {
 		fmt.Println()
 		fmt.Printf("Completed %d images in %.2f seconds\n", len(results), float64(time.Now().UnixMilli()-sw)/1000)
 	} else {
-		var result, err = Generate(path, options)
+		var result, err = Generate(ScanResult{Texture: path}, options)
 
 		if err != nil {
 			return err

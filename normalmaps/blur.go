@@ -18,6 +18,7 @@ func blur(normals [][]vector3.Vector3, bitmap [][]bool, w int, h int, sigma floa
 	parallel.For(0, w, func(x int, errs chan<- error) {
 		for y := 0; y < h; y++ {
 			if !bitmap[x][y] {
+				temp[x][y] = Neutral
 				continue
 			}
 
@@ -43,8 +44,9 @@ func blur(normals [][]vector3.Vector3, bitmap [][]bool, w int, h int, sigma floa
 	})
 
 	parallel.For(0, w, func(x int, errs chan<- error) {
-		for y := 0; y < h; y++ {
+		for y := range h {
 			if !bitmap[x][y] {
+				smoothed[x][y] = Neutral
 				continue
 			}
 
@@ -65,6 +67,8 @@ func blur(normals [][]vector3.Vector3, bitmap [][]bool, w int, h int, sigma floa
 			} else {
 				smoothed[x][y] = normals[x][y]
 			}
+
+			smoothed[x][y] = *smoothed[x][y].Normalize()
 		}
 		errs <- nil
 	})

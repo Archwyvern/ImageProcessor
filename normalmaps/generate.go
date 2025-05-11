@@ -15,15 +15,16 @@ var DefaultFileMarker = "_n"
 var SupportedExtension = ".png"
 
 type GenerateOptions struct {
-	Excludes      []string
-	Overwrite     bool
-	FileMarker    string
-	BevelRatio    float64
-	BevelHeight   float64
-	BevelSmooth   float64
-	EmbossHeight  float64
-	EmbossSmooth  int
-	EmbossDenoise float64
+	Excludes           []string
+	Overwrite          bool
+	FileMarker         string
+	OverrideFileMarker string
+	BevelRatio         float64
+	BevelHeight        float64
+	BevelSmooth        float64
+	EmbossHeight       float64
+	EmbossSmooth       int
+	EmbossDenoise      float64
 }
 
 type GenerateResult struct {
@@ -33,7 +34,7 @@ type GenerateResult struct {
 }
 
 func ScanAndGenerate(dir string, options GenerateOptions) ([]GenerateResult, error) {
-	var scanResults, err = Scan(dir, options.FileMarker, options.Excludes)
+	var scanResults, err = Scan(dir, options.FileMarker, options.OverrideFileMarker, options.Excludes)
 
 	if err != nil {
 		return nil, err
@@ -47,7 +48,7 @@ func ScanAndGenerate(dir string, options GenerateOptions) ([]GenerateResult, err
 			return
 		}
 
-		generationResult, err := Generate(scanResults[i].Texture, options)
+		generationResult, err := Generate(scanResults[i], options)
 
 		if err != nil {
 			errs <- err
@@ -76,7 +77,8 @@ func ScanAndGenerate(dir string, options GenerateOptions) ([]GenerateResult, err
 	return results, nil
 }
 
-func Generate(file string, options GenerateOptions) (*GenerateResult, error) {
+func Generate(data ScanResult, options GenerateOptions) (*GenerateResult, error) {
+	file := data.Texture
 	normals, valid := ResolveSuffixedFilePath(file, options.FileMarker)
 
 	if !valid {
@@ -89,6 +91,13 @@ func Generate(file string, options GenerateOptions) (*GenerateResult, error) {
 		return nil, err
 	}
 
+	normalsOverrideFile, err := os.Open(data.NormalsOverride)
+	var overrideReader *bufio.Reader
+
+	if err == nil {
+		overrideReader = bufio.NewReader(normalsOverrideFile)
+	}
+
 	normalsFile, err := os.Create(normals)
 
 	if err != nil {
@@ -99,7 +108,8 @@ func Generate(file string, options GenerateOptions) (*GenerateResult, error) {
 	writer := bufio.NewWriter(normalsFile)
 
 	sw := time.Now().UnixMicro()
-	if err := process(reader, writer, options); err != nil {
+
+	if err := process(reader, overrideReader, writer, options); err != nil {
 		return nil, err
 	}
 

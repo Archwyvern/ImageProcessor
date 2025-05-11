@@ -79,7 +79,7 @@ func getBevelNormals(img image.NRGBA, ratio float64, height float64, smooth floa
 	bitmap := util.NewMatrix[bool](w, h)
 
 	parallel.For(0, w, func(x int, errs chan<- error) {
-		for y := 0; y < h; y++ {
+		for y := range h {
 			point := orb.Point{float64(x), float64(y)}
 			alpha := img.At(x, y).(color.NRGBA).A
 			bitmap[x][y] = alpha > 0
@@ -97,21 +97,26 @@ func getBevelNormals(img image.NRGBA, ratio float64, height float64, smooth floa
 
 					direction := eV.Sub(&pV)
 
-					scale := util.EaseInCirc(1 - direction.Magnitude()/depth)
-					normal := direction.Normalize().MulScalar(scale + height/4)
-					z := util.Clamp(scale, 0, 1) * height
+					scale := direction.Magnitude() / depth
+					normal2 := direction.Normalize() //.MulScalar(scale + height/4)
 
-					normals[x][y] = vector3.Vector3{
-						X: normal.X,
-						Y: normal.Y,
-						Z: z,
-					}
+					normal := vector3.New(normal2.X, normal2.Y, 0)
+					Neutralize(normal, scale)
+
+					//z := float64(1)                 //util.Clamp(scale, 0, 1) * height
+
+					normals[x][y] = *normal
+					//normals[x][y] = vector3.Vector3{
+					//	X: normal.X,
+					//	Y: normal.Y,
+					//	Z: z,
+					//}
 
 					continue
 				}
 			}
 
-			normals[x][y] = vector3.Vector3{}
+			normals[x][y] = Neutral
 		}
 
 		errs <- nil

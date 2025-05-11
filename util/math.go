@@ -19,7 +19,15 @@ func Clamp(t float64, min float64, max float64) float64 {
 }
 
 func EaseInCirc(t float64) float64 {
-	return -(math.Sqrt(1-t*t) - 1)
+	return 1 - math.Sqrt(1-t*t)
+}
+
+func EaseOutCirc(t float64) float64 {
+	return math.Sqrt(1 - (t-1)*(t-1))
+}
+
+func EaseOutQuad(t float64) float64 {
+	return t * (2 - t)
 }
 
 func DegreesToVector2(directionInDegrees float64) vector2.Vector2 {

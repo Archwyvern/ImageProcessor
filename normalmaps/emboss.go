@@ -11,7 +11,7 @@ import (
 	"github.com/deeean/go-vector/vector3"
 )
 
-func getEmbossNormals(img image.NRGBA, height float64, smooth int, denoise float64) [][]vector3.Vector3 {
+func getEmbossNormals(img image.NRGBA, smooth int, denoise float64) [][]vector3.Vector3 {
 	w := img.Bounds().Dx()
 	h := img.Bounds().Dy()
 
@@ -31,7 +31,7 @@ func getEmbossNormals(img image.NRGBA, height float64, smooth int, denoise float
 	parallel.For(0, w, func(x int, errs chan<- error) {
 		for y := 0; y < h; y++ {
 			if !bitmap[x][y] {
-				normals[x][y] = vector3.Vector3{}
+				normals[x][y] = Neutral
 				continue
 			}
 
@@ -49,15 +49,23 @@ func getEmbossNormals(img image.NRGBA, height float64, smooth int, denoise float
 			dx := (topRight + 2*right + bottomRight) - (topLeft + 2*left + bottomLeft)
 			dy := (bottomLeft + 2*bottom + bottomRight) - (topLeft + 2*top + topRight)
 
-			normal := vector2.Vector2{X: -dx, Y: -dy}
+			normal2 := vector2.Vector2{X: -dx, Y: -dy}
 
-			a := normal.MulScalar(10 * height)
+			//normal = *normal.Normalize()
 
-			normals[x][y] = vector3.Vector3{
-				X: a.X,
-				Y: a.Y,
-				Z: normal.Magnitude() * 4 * height,
-			}
+			normal := vector3.New(normal2.X, normal2.Y, reconstructZ(normal2.X, normal2.Y))
+
+			Neutralize(normal, 0.75)
+
+			normals[x][y] = *normal
+
+			//a := normal2.MulScalar(10 * height)
+
+			//normals[x][y] = vector3.Vector3{
+			//	X: a.X,
+			//	Y: a.Y,
+			//	Z: normal2.Magnitude() * 4 * height,
+			//}
 		}
 		errs <- nil
 	})
@@ -73,4 +81,12 @@ func getAdjacentLevel(center float64, matrix [][]float64, x int, y int, w int, h
 	}
 
 	return matrix[x][y]
+}
+
+func reconstructZ(x, y float64) float64 {
+	t := 1 - x*x - y*y
+	if t <= 0 {
+		return 0
+	}
+	return math.Sqrt(t)
 }
